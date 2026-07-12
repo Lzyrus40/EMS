@@ -1,31 +1,33 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { getLocalStorage, setLocalStorage } from '../utils/localStorage'
+import React, { createContext, useEffect, useState } from "react";
+import { getLocalStorage, setLocalStorage } from "../utils/localStorage";
 
-export const AuthContext = createContext()
+export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    // localStorage.clear()
+  // localStorage.clear(); // Uncomment only if you want to reset all data
 
-    const [userData, setUserData] = useState(null)
-    const [adminData, setAdminData] = useState(null)
+  const [userData, setUserData] = useState(null);
+  const [adminData, setAdminData] = useState(null);
 
-    useEffect(() => {
-        setLocalStorage()
-        const {admin} = getLocalStorage()
-        const {employees} = getLocalStorage()
-        setUserData(employees)
-        setAdminData(admin)
-    }, [])
-    
-    
+  useEffect(() => {
+    // Initialize localStorage only if it is empty
+    setLocalStorage();
 
-    return (
-        <div>
-            <AuthContext.Provider value={[userData,setUserData,adminData,setAdminData]}>
-                {children}
-            </AuthContext.Provider>
-        </div>
-    )
-}
+    // Get data from localStorage
+    const { employees, admin } = getLocalStorage();
 
-export default AuthProvider
+    // Update state
+    setUserData(employees);
+    setAdminData(admin);
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={[userData, setUserData, adminData, setAdminData]}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
